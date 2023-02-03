@@ -64,7 +64,8 @@ on_draw.lines_x = 0
 def main():
     arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, 'Ferrari F-40')
     arcade.set_background_color(arcade.csscolor.LIGHT_SKY_BLUE)
-    arcade.schedule(on_draw, 1/200)
+    arcade.schedule(on_draw, 1/60)
     arcade.run()
 
 main()
+
