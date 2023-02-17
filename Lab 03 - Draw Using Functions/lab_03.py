@@ -35,6 +35,12 @@ def draw_ferrari():
     arcade.draw_polygon_filled([(600, 327), (665, 338), (663, 318)], arcade.csscolor.DARK_RED)
     arcade.draw_polygon_filled([(450, 315), (695, 315), (458, 322), (458, 370), (465, 375), (450, 375)], arcade.csscolor.DARK_RED)
 
+
+def draw_lines2(x, y):
+    arcade.draw_rectangle_filled(x, y + 50, 125, 15, arcade.csscolor.BLUE, 0)
+
+draw_lines2.x = SCREEN_WIDTH
+
 def draw_lines(x, y):
     arcade.draw_rectangle_filled(x, y + 50, 125, 15, arcade.csscolor.SLATE_GREY, 0)
     arcade.draw_rectangle_filled(x + 250, y + 50, 125, 15, arcade.csscolor.SLATE_GREY, 0)
@@ -55,7 +61,14 @@ def draw_road():
 def on_draw(delta_time):
     arcade.start_render()
     draw_road()
-    draw_lines(on_draw.lines_x, 250)
+    for i in range(0, 1250, 250):
+        draw_lines2(draw_lines2.x + i, 250)
+    if draw_lines2.x == 0:
+        draw_lines2.x = SCREEN_WIDTH
+    else:
+        draw_lines2.x -= 10
+
+    #draw_lines(on_draw.lines_x, 250)
     draw_ferrari()
     on_draw.lines_x += 10
     if on_draw.lines_x == 1200:
@@ -64,7 +77,7 @@ on_draw.lines_x = 0
 def main():
     arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, 'Ferrari F-40')
     arcade.set_background_color(arcade.csscolor.LIGHT_SKY_BLUE)
-    arcade.schedule(on_draw, 1/200)
+    arcade.schedule(on_draw, 1/60)
     arcade.run()
 
 main()
