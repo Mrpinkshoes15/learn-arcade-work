@@ -7,14 +7,20 @@ def main ():
           "You have stolen a camel to make your way across the great Mobi desert."
           "The natives want their camel back and are chasing you down!"
           "Survive your desert trek and outrun the natives.")
+
+
     miles_traveled = 0
-    thirst = 30
+    thirst = 50
     camel_energy = 100
     natives_distance = 20
     done = False
+
+
     # constants
     CANTEEN_LEVEL = 3
     DISTANCE_TO_TRAVEL = 200
+
+
     def status():
         print("miles_traveled: " + str(miles_traveled))
         print("camels energy: " + str(camel_energy))
@@ -25,20 +31,23 @@ def main ():
 
 #main game while loops
     while done is False:
-        print("A. Drink from your canteen."
-              "B. Ahead moderate speed. "
-              "C. Ahead full speed! "
-              "D. Stop for the night. "
-              "E. Status check. "
-              "Q. Quit."
-              )
+        print("A. Drink from your canteen. ")
+        print("B. Ahead moderate speed. ")
+        print("C. Ahead full speed! ")
+        print("D. Stop for the night. ")
+        print("E. Status check. ")
+        print("Q. Quit.")
+
+
         answer = input("What is your answer: ")
+
 
         if answer.upper() == "Q":
             done = True
             print("You got to scared of the natives. They over took you and ate you or something.")
             natives_distance -= random.randrange(3)
             thirst = 30
+
 
         elif answer.upper() == "A":
             done = False
@@ -49,10 +58,12 @@ def main ():
             natives_distance -= 1
 
 
+
         elif answer.upper() == "B":
             miles_traveled += random.randrange(5, 12)
             camel_energy -= random.randrange(5, 10)
             thirst -= random.randrange(10)
+
 
 
         elif answer.upper() == "C":
@@ -61,13 +72,16 @@ def main ():
             thirst -= random.randrange(10)
 
 
+
         elif answer.upper() == "D":
             camel_energy = 100
             natives_distance -= random.randrange(20)
             thirst -= random.randrange(5)
 
+
         elif answer.upper() == "E":
             status()
+
 
 
         if thirst <= 0:
@@ -77,7 +91,7 @@ def main ():
             if CANTEEN_LEVEL == 0:
                 print("You,  no longer have any water")
             natives_distance -= random.randrange(7)
-            thirst = 30
+            thirst = 40
 
         if camel_energy <= 0:
             answer.upper() == "D"
