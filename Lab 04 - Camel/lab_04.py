@@ -10,7 +10,7 @@ def main ():
 
 
     miles_traveled = 0
-    thirst = 50
+    thirst = 40
     camel_energy = 100
     natives_distance = 20
     done = False
@@ -63,15 +63,23 @@ def main ():
             miles_traveled += random.randrange(5, 12)
             camel_energy -= random.randrange(5, 10)
             thirst -= random.randrange(10)
-
-
+            for i in range(20):
+                if random.randrange(30) == 0:
+                    print("You have found an oasis!")
+                    CANTEEN_LEVEL == 3
+                    camel_energy == 100
+                    thirst == 40
 
         elif answer.upper() == "C":
             miles_traveled += random.randrange(7, 14)
             camel_energy -= random.randrange(8, 15)
             thirst -= random.randrange(10)
-
-
+            for i in range(20):
+                if random.randrange(30) == 0:
+                    print("You have found an oasis!")
+                    CANTEEN_LEVEL == 3
+                    camel_energy == 100
+                    thirst == 40
 
         elif answer.upper() == "D":
             camel_energy = 100
@@ -84,15 +92,20 @@ def main ():
 
 
 
-        if thirst <= 0:
+
+
+
+
+        if thirst <= 20:
             CANTEEN_LEVEL -= 1
-            print("You have taken a drink of water.")
-            status()
+            print("you are thirsty. You should take a drink.")
             if CANTEEN_LEVEL == 0:
                 print("You,  no longer have any water")
             natives_distance -= random.randrange(7)
-            thirst = 40
-
+            thirst = 30
+        if thirst <= 0:
+                print("you died of thirst")
+                break
         if camel_energy <= 0:
             answer.upper() == "D"
             camel_energy = 100
