@@ -1,24 +1,28 @@
 import arcade
-import math
+import random
 
 
 # screen stuff
-WIDTH = 1000
-HEIGHT = 800
+WIDTH = 1200
+HEIGHT = 1200
 arcade.open_window(WIDTH, HEIGHT, 'moving car')
 arcade.set_background_color(arcade.csscolor.LIGHT_GREEN)
-x_start = 500
-y_start = 400
 arcade.start_render()
 
-#colors
-road = arcade.csscolor.DARK_SLATE_GRAY
+#def square(center_x, center_y):
+    #arcade.draw_rectangle_filled(center_x, center_y, 5, 5, arcade.csscolor.BLACK)
+
+#for x in range(400, 640, 10):
+    #for y in range(x + 100, 640, 10):
+        #square(x, y)
+
+def draw_section_6(center_x, center_y):
+    arcade.draw_rectangle_filled(center_x, center_y, 5, 5, arcade.csscolor.BLACK)
 
 
-#road
-arcade.draw_polygon_filled([(500, 0), (600, 0), (550, 200), (450, 200)], road)
-arcade.draw_polygon_filled([(450, 200), (550, 200), (700, 350), (600, 350)], road)
-arcade.draw_polygon_filled([(600, 350), (700, 350)], road)
+for x in range(300):
+    for y in range(200):
+        draw_section_6(x, y)
 
 arcade.finish_render()
 arcade.run()
