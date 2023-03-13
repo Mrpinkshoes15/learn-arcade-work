@@ -1,28 +1,29 @@
-import arcade
-import random
+class Room:
+    def __init__(self, description, north, east, south, west):
+        self.description = description
+        self.north = north
+        self.east = east
+        self.south = south
+        self.west = west
 
+def main():
+    room_list = []
 
-# screen stuff
-WIDTH = 1200
-HEIGHT = 1200
-arcade.open_window(WIDTH, HEIGHT, 'moving car')
-arcade.set_background_color(arcade.csscolor.LIGHT_GREEN)
-arcade.start_render()
+    room = Room("Welcome to your DOOM... You are in the entry way, there is a hallway to the east.", None, 1, None,
+                None)
+    room_list.append(room)
 
-#def square(center_x, center_y):
-    #arcade.draw_rectangle_filled(center_x, center_y, 5, 5, arcade.csscolor.BLACK)
+    room = Room("You are in the hallway, you can continue east or turn back to the west.", None, 1, None, 1)
+    room_list.append(room)
 
-#for x in range(400, 640, 10):
-    #for y in range(x + 100, 640, 10):
-        #square(x, y)
+    room = Room("you are in the main room now, you may continue to the east or to the north.", 1, 1, None, None)
+    room_list.append(room)
 
-def draw_section_6(center_x, center_y):
-    arcade.draw_rectangle_filled(center_x, center_y, 5, 5, arcade.csscolor.BLACK)
+    current_room = 0
+    done = False
 
-
-for x in range(300):
-    for y in range(200):
-        draw_section_6(x, y)
-
-arcade.finish_render()
-arcade.run()
+    while not done:
+        print()
+        print(room_list[current_room].description)
+        direction = input("Which way would you like to go? (n s e w)").lower()
+main()
