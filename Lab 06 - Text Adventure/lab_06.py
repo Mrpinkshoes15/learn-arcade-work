@@ -17,11 +17,11 @@ def main():
     room_list.append(room)
 
 # hallway - room 2
-    room = Room("You are in the hallway, you can continue east.", 1, 1, None, None)
+    room = Room("You are in the hallway, you can continue east.", 6, 2, None, None)
     room_list.append(room)
 
 # main room - room 3
-    room = Room("you are in the main room now, you may continue to the east or to the north.", None, 1, None, None)
+    room = Room("you are in the main room now, you may continue to the east or to the north.", None, 1, None, 1)
     room_list.append(room)
 
 # bed_room 1 - room 4

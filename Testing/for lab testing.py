@@ -3,23 +3,7 @@ import arcade
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
 MOVEMENT_SPEED = 3
-class Eye:
-    def __init__(self, position_x, position_y, radius, color):
 
-        # Take the parameters of the init function above,
-        # and create instance variables out of them.
-        self.position_x = position_x
-        self.position_y = position_y
-        self.radius = radius
-
-    def draw_eye(self):
-        """ Draw the balls with the instance variables we have. """
-        arcade.draw_circle_filled(self.position_x, self.position_y, self.radius + 30, arcade.csscolor.WHITE)
-        arcade.draw_circle_filled(self.position_x, self.position_y, self.radius + 10, arcade.csscolor.BLUE)
-        arcade.draw_circle_filled(self.position_x, self.position_y, self.radius, arcade.csscolor.BLACK)
-        arcade.draw_circle_filled(self.position_x + 150, self.position_y, self.radius + 30, arcade.csscolor.WHITE)
-        arcade.draw_circle_filled(self.position_x + 150, self.position_y, self.radius + 10, arcade.csscolor.BLUE)
-        arcade.draw_circle_filled(self.position_x + 150, self.position_y, self.radius, arcade.csscolor.BLACK)
 
 class Smile:
     def __init__(self, position_x, position_y, change_x, change_y, radius, color):
@@ -70,20 +54,17 @@ class MyGame(arcade.Window):
 
         # Make the mouse disappear when it is over the window.
         # So we just see our object, not the pointer.
-        self.set_mouse_visible(True)
+        self.set_mouse_visible(False)
 
         arcade.set_background_color(arcade.color.ASH_GREY)
 
         # Create our ball
         self.smile = Smile(50, 50, 0, 0, 30, arcade.color.AUBURN)
-        # Create our eyes
-        self.eye = Eye(50, 50, 15, arcade.csscolor.BLACK)
+
     def on_draw(self):
         """ Called whenever we need to draw the window. """
         arcade.start_render()
-        arcade.draw_circle_filled(320, 240, 120, arcade.csscolor.GREEN)
         self.smile.draw_smile()
-        self.eye.draw_eye()
 
     def update(self, delta_time):
         self.smile.update()
@@ -105,18 +86,10 @@ class MyGame(arcade.Window):
             self.smile.change_x = 0
         elif key == arcade.key.UP or key == arcade.key.DOWN:
             self.smile.change_y = 0
-    def on_mouse_press(self, x, y, dx, dy):
-        """ Called to update our objects.
-        Happens approximately 60 times per second."""
-        self.eye.position_x = x
-        self.eye.position_y = y
-        self.eye.radius -= 30
 
-    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
-        self.eye.radius += 30
 
 def main():
-    window = MyGame(640, 480, "lab 7")
+    window = MyGame(640, 480, "Drawing Example")
     arcade.run()
 
 

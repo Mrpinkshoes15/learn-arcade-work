@@ -6,34 +6,13 @@ SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 750
 x = 500
 y = 375
-def draw_ferrari():
-        #front hood
-    arcade.draw_arc_filled(524, 300, 530, 196, arcade.color.RED, 10, 160)
-        #windows
-    arcade.draw_arc_filled(585, 325, 400, 230, arcade.color.LIGHT_GRAY, 40, 180)
-    arcade.draw_polygon_filled([(720, 410), (770, 388), (700, 388)], arcade.csscolor.LIGHT_GRAY)
-        #rear/mid car body
-    arcade.draw_polygon_filled([(780, 390), (430,375), (430, 305), (760, 305), (780, 310) ], arcade.csscolor.RED)
-        #rear wing
-    arcade.draw_polygon_filled([(838, 327), (780, 310), (780, 390), (795, 425), (838, 425)], arcade.csscolor.RED)
-        #front spliter
-    arcade.draw_polygon_filled([(430, 330), (275, 325), (270, 305), (430, 305)], arcade.csscolor.RED)
-        #front fender
-    arcade.draw_polygon_filled([(418,390), (450,375), (430, 330), (275, 325), (280, 338)], arcade.csscolor.RED)
-        # A and B pillars
-    arcade.draw_polygon_filled([(430, 375), (440, 375), (520, 429), (620, 429), (670, 396), (660, 385), (740, 388), (630, 437), (520, 437)], arcade.csscolor.RED)
-        #wheel arches
-    arcade.draw_arc_filled(385, 305, 105, 140, arcade.csscolor.DARK_RED, 0, 180)
-    arcade.draw_arc_filled(740, 305, 105, 140, arcade.csscolor.DARK_RED, 8.30, 180)
-        # wheels
-    arcade.draw_ellipse_filled(385, 326, 90, 90, arcade.csscolor.BLACK, 0,)
-    arcade.draw_ellipse_filled(740, 326, 92, 92, arcade.csscolor.BLACK, 0)
-    arcade.draw_ellipse_filled(385, 326, 70, 70, arcade.csscolor.SILVER, 0,)
-    arcade.draw_ellipse_filled(740, 326, 72, 72, arcade.csscolor.SILVER, 0)
-        # side details
-    arcade.draw_polygon_filled([(510, 372), (640, 378), (637, 350)], arcade.csscolor.DARK_RED)
-    arcade.draw_polygon_filled([(600, 327), (665, 338), (663, 318)], arcade.csscolor.DARK_RED)
-    arcade.draw_polygon_filled([(450, 315), (695, 315), (458, 322), (458, 370), (465, 375), (450, 375)], arcade.csscolor.DARK_RED)
+def draw_smile():
+    arcade.draw_arc_filled(500, 375, 200, 100, arcade.csscolor.RED, 180, 360)
+    arcade.draw_arc_filled(500, 375 - 5, 180, 80, arcade.csscolor.DARK_RED, 180, 360)
+    arcade.draw_arc_filled(500, 375 - 30, 100, 200, arcade.csscolor.LIGHT_PINK, 180, 360)
+    arcade.draw_arc_filled(500 - 20, 375 - 30, 60, 20, arcade.csscolor.LIGHT_PINK, 0, 180)
+    arcade.draw_arc_filled(500 + 20, 375 - 30, 60, 20, arcade.csscolor.LIGHT_PINK, 0, 180)
+    arcade.draw_line(500, 350, 500, 290, arcade.csscolor.PINK, 2)
 
 def draw_lines(x, y):
     arcade.draw_rectangle_filled(x, y + 50, 125, 15, arcade.csscolor.SLATE_GREY, 0)
@@ -56,7 +35,7 @@ def on_draw(delta_time):
     arcade.start_render()
     draw_road()
     draw_lines(on_draw.lines_x, 250)
-    draw_ferrari()
+    draw_smile()
     on_draw.lines_x += 10
     if on_draw.lines_x == 1200:
         on_draw.lines_x = 0
