@@ -21,7 +21,7 @@ class Eye:
         arcade.draw_circle_filled(self.position_x + 150, self.position_y, self.radius + 10, arcade.csscolor.BLUE)
         arcade.draw_circle_filled(self.position_x + 150, self.position_y, self.radius, arcade.csscolor.BLACK)
 
-class Smile:
+class Smile():
     def __init__(self, position_x, position_y, change_x, change_y, radius, color):
 
         # Take the parameters of the init function above,
