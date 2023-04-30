@@ -43,7 +43,7 @@ class MyGame(arcade.Window):
             for column in range(COLUMN_COUNT):
                 self.grid[row].append(0)  # Append a cell
 
-        arcade.set_background_color(arcade.color.GRAY)
+        arcade.set_background_color(arcade.color.BLACK_LEATHER_JACKET)
 
     def flip_value(self, value):
         new_val = 0
