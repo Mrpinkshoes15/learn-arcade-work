@@ -1,99 +1,139 @@
 import random
 import arcade
 
-SPRITE_SCALING = 0.5
+SCREEN_WIDTH = 700
+SCREEN_HEIGHT = 640
+SCREEN_TITLE = "Sprite Move with Scrolling Screen Example"
 
-DEFAULT_SCREEN_WIDTH = 800
-DEFAULT_SCREEN_HEIGHT = 500
-SCREEN_TITLE = "flappy Plane"
+VIEWPORT_MARGIN = 0
+
+CAMERA_SPEED = 0.1
+
+CHARACTER_SCALING = .75
+SPRITE_SCALING = .5
+SPRITE_SCALING_WALLS = .5
+
+PLAYER_MOVEMENT_SPEED = 2
+MOVEMENT_SPEED = 2
+GRAVITY = 1.2
+
+PLAYER_JUMP_SPEED = 15
+font_size = 20
+
+
+class Wall(arcade.Sprite):
+    def __init__(self, image, scale, game):
+        super().__init__(image, scale)
+        self.game = game
+
+    def update(self):
+        """ Move the walls """
+        # Move walls.
+        # Remove these lines if physics engine is moving walls.
+        self.center_x += self.game.wall_change_x
+
 
 class MyGame(arcade.Window):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """
         Initializer
         """
-        super().__init__(width, height, title, resizable=True)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
 
-        # Sprite lists
+        self.image = None
+        self.fly_plane = None
+        self.scene = None
+
         self.player_list = None
-        self.ostical_list = None
-
-        self.all_sprites_list = None
-
-        # list for wall blocks
-        self.multiples_of_64_list = [320, 384, 448, 512]
+        self.walls_list = None
         self.score = 0
-        # Set up the player
-        self.player_sprite = None
 
-        # Physics engine so we don't run into walls.
+        # Separate variable that holds the player sprite
+        self.player_sprite = None
+        self.walls_sprite = None
+        # Our physics engine
         self.physics_engine = None
 
-        # Track the current state of what key is pressed
+        self.set_mouse_visible(True)
         self.space_pressed = False
+        self.game_started = False
+        self.game_over = False
+        self.monitor = 0
+        self.wall_change_x = 0
 
+        arcade.set_background_color(arcade.color.LIGHT_SKY_BLUE)
+        self.wall_set = []
+        self.wall_set.append([0, 0, 0, 1, 1, 1, 1, 1, 1, 1])
+        self.wall_set.append([1, 0, 0, 0, 1, 1, 1, 1, 1, 1])
+        self.wall_set.append([1, 1, 0, 0, 0, 1, 1, 1, 1, 1])
+        self.wall_set.append([1, 1, 1, 0, 0, 0, 1, 1, 1, 1])
+        self.wall_set.append([1, 1, 1, 1, 0, 0, 0, 1, 1, 1])
+        self.wall_set.append([1, 1, 1, 1, 1, 0, 0, 0, 1, 1])
+        self.wall_set.append([1, 1, 1, 1, 1, 1, 0, 0, 0, 1])
+        self.wall_set.append([1, 1, 1, 1, 1, 1, 1, 0, 0, 0])
 
-        # Create the cameras. One for the GUI, one for the sprites.
-
-        # We scroll the 'sprite world' but not the GUI.
-
+    def generate_walls(self):
+        random_wall = random.randint(0, 7)
+        ndx = 10
+        for y in range(32, 640, 64):
+            ndx -= 1
+            if self.wall_set[random_wall][ndx] == 0:
+                continue
+            wall_segment = Wall(":resources:images/tiles/brickGrey.png", SPRITE_SCALING_WALLS, self)
+            wall_segment.center_x = SCREEN_WIDTH + 64
+            wall_segment.center_y = y
+            self.walls_list.append(wall_segment)
 
     def setup(self):
         """ Set up the game and initialize the variables. """
-
+        self.scene = arcade.Scene()
         # Sprite lists
         self.player_list = arcade.SpriteList()
-        self.ostical_list = arcade.SpriteList()
-        self.all_sprites_list = arcade.SpriteList()
 
-        # Set up the player
-        self.player_sprite = arcade.Sprite("piderman.png",
-                                           scale=0.04)
-        self.player_sprite.center_x = 40
-        self.player_sprite.center_y = 40
+        self.score = 0
+
+        self.walls_list = arcade.SpriteList()
+        self.generate_walls()
+
+        # self.flying_plane = [arcade.Sprite("planeGreen1.png", CHARACTER_SCALING),
+        #                      arcade.Sprite("planeGreen2.png", CHARACTER_SCALING),
+        #     arcade.Sprite("planeGreen3.png", CHARACTER_SCALING)]
+        # # for i in range(self.flying_plane):
+        # #     image_source = i
+        self.fly_plane = []
+        self.fly_plane.append(arcade.Sprite("planeGreen1.png", CHARACTER_SCALING))
+        self.fly_plane.append(arcade.Sprite("planeGreen2.png", CHARACTER_SCALING))
+        self.fly_plane.append(arcade.Sprite("planeGreen3.png", CHARACTER_SCALING))
+        self.fly_plane.append(arcade.Sprite("planeRed1.png", CHARACTER_SCALING))
+        self.fly_plane.append(arcade.Sprite("planeRed2.png", CHARACTER_SCALING))
+        self.fly_plane.append(arcade.Sprite("planeRed3.png", CHARACTER_SCALING))
+        self.image = 0
+
+        self.player_sprite = self.fly_plane[self.image]
+
+
+        self.player_sprite.center_x = 128
+        self.player_sprite.center_y = 128
+        self.scene.add_sprite("Player", self.player_sprite)
         self.player_list.append(self.player_sprite)
 
-        ### Set up walls with random empty spaces
-        for y in range(136, 1650, 128):
-            for x in range(0, 2560, 64):
-                # Randomly skip a box so the player can find a way through
-                if random.randrange(5) > 0:
-                    wall = arcade.Sprite(":resources:images/tiles/brickGrey.png", SPRITE_SCALING)
-                    wall.center_x = x
-                    wall.center_y = y
-                    self.ostical_list.append(wall)
-        # makes random choice based on a list
-        # creates random path blockers
-        c = random.choice(self.multiples_of_64_list)
-        for y in range(200, 1650, c):
-            for x in range(192, 2560, c):
-                wall = arcade.Sprite(":resources:images/tiles/brickTextureWhite.png", SPRITE_SCALING)
-                wall.center_x = x
-                wall.center_y = y
-                self.ostical_list.append(wall)
+        self.physics_engine = arcade.PhysicsEnginePlatformer(
 
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.ostical_list)
+            self.player_sprite, self.walls_list, gravity_constant=GRAVITY)
 
-        ### left and right boarders
-        for side_boarders_y in range(8, 1694, 64):
-            for side_position_x in range(-64, 2528, 2560):
-                side_boarder = arcade.Sprite("kekw.png", 0.1)
-                side_boarder.center_x = side_position_x
-                side_boarder.center_y = side_boarders_y
-                self.ostical_list.append(side_boarder)
+    def update_walls_speed(self):
+        if self.space_pressed:
+            self.wall_change_x -= MOVEMENT_SPEED
+            self.monitor += MOVEMENT_SPEED
+            if self.monitor > SCREEN_WIDTH / 3:
+                self.generate_walls()
+                self.monitor = 0
 
-        ## top and bottom boarders
-        for top_boarders_x in range(0, 2560, 64):
-            for top_position_y in range(8, 1694, 1664):
-                top_boarder = arcade.Sprite("kekw.png", 0.1)
-                top_boarder.center_x = top_boarders_x
-                top_boarder.center_y = top_position_y
-                self.ostical_list.append(top_boarder)
-
-
-        arcade.set_background_color(arcade.color.BLACK_BEAN)
+        for seg in self.walls_list:
+            if seg.center_x < 0:
+                seg.remove_from_sprite_lists()
 
     def on_draw(self):
         """ Render the screen. """
@@ -101,71 +141,50 @@ class MyGame(arcade.Window):
         # This command has to happen before we start drawing
         self.clear()
 
-        # Select the camera we'll use to draw all our sprites
+        arcade.start_render()
 
-        self.camera_sprites.use()
-
-        # Draw all the sprites.
-        self.ostical_list.draw()
+        self.walls_list.draw()
         self.player_list.draw()
-        self.coin_list.draw()
 
-        # Select the (unscrolled) camera for our GUI
-
-        self.camera_gui.use()
-
-        # Draw the GUI
-        # arcade.draw_rectangle_filled(self.width // 2,
-        #                              20,
-        #                              self.width,
-        #                              40,
-        #                              arcade.color.ALMOND)
-        # text = f"Scroll value: ({self.camera_sprites.position[0]:5.1f}, " \
-        #        f"{self.camera_sprites.position[1]:5.1f})"
-        # arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
         output = f"Score: {self.score}"
-        arcade.draw_text(output, 400, 270, arcade.color.WHITE, 18)
+        arcade.draw_text(output, 350, 20, arcade.color.BLACK, font_size)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
-
         if key == arcade.key.SPACE:
-            self.up_pressed = True
-
-    def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
-
-        if key == arcade.key.SPACE:
-            self.up_pressed = False
+            self.player_sprite.change_y = PLAYER_JUMP_SPEED
+            self.game_started = True
+            self.space_pressed = True
 
     def on_update(self, delta_time):
         """ Movement and game logic """
+        self.image += 1
+        # if self.image >= len(self.fly_plane):
+        #     self.image = 0
+        # self.player_sprite = self.fly_plane[self.image]
 
-        # Calculate speed based on the keys pressed
-        self.player_sprite.change_x = 0
-        self.player_sprite.change_y = 0
+        self.update_walls_speed()
+        self.walls_list.update()
+        self.wall_change_x = 0
 
+        if not arcade.check_for_collision_with_list(self.player_sprite, self.walls_list):
+            self.game_over = False
+            self.score += 1
+
+        if arcade.check_for_collision_with_list(self.player_sprite, self.walls_list):
+            print("game over")
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.physics_engine.update()
 
-        ### scoring
-        coins_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
-                                                              self.coin_list)
 
-        # Loop through each colliding sprite, remove it, and add to the score.
-        for coin in coins_hit_list:
-            coin.remove_from_sprite_lists()
-            self.score += 10
+def main():
+    """ Main function """
+    window = MyGame()
+    window.setup()
+    arcade.run()
 
 
-
-    def main():
-        """ Main function """
-        window = MyGame(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT, SCREEN_TITLE)
-        window.setup()
-        arcade.run()
-
-    if __name__ == "__main__":
-        main()
+if __name__ == "__main__":
+    main()

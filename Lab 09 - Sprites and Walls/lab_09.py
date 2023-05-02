@@ -70,7 +70,7 @@ class MyGame(arcade.Window):
         self.all_sprites_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite("piderman.png",
+        self.player_sprite = arcade.Sprite("../Testing/piderman.png",
                                            scale=0.04)
         self.player_sprite.center_x = 40
         self.player_sprite.center_y = 40
@@ -100,7 +100,7 @@ class MyGame(arcade.Window):
         ### left and right boarders
         for side_boarders_y in range(8, 1694, 64):
             for side_position_x in range(-64, 2528, 2560):
-                side_boarder = arcade.Sprite("kekw.png", 0.1)
+                side_boarder = arcade.Sprite("../Testing/kekw.png", 0.1)
                 side_boarder.center_x = side_position_x
                 side_boarder.center_y = side_boarders_y
                 self.wall_list.append(side_boarder)
@@ -108,7 +108,7 @@ class MyGame(arcade.Window):
         ## top and bottom boarders
         for top_boarders_x in range(0, 2560, 64):
             for top_position_y in range(8, 1694, 1664):
-                top_boarder = arcade.Sprite("kekw.png", 0.1)
+                top_boarder = arcade.Sprite("../Testing/kekw.png", 0.1)
                 top_boarder.center_x = top_boarders_x
                 top_boarder.center_y = top_position_y
                 self.wall_list.append(top_boarder)
@@ -132,7 +132,6 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
 
-        arcade.set_background_color(arcade.color.BLACK_BEAN)
 
 
 
