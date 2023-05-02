@@ -42,6 +42,7 @@ class MyGame(arcade.Window):
         """
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
 
+        self.start_block = None
         self.image = None
         self.fly_plane = None
         self.scene = None
@@ -50,9 +51,14 @@ class MyGame(arcade.Window):
         self.walls_list = None
         self.score = 0
 
+        ##sound effects
+        self.flying_sound = arcade.load_sound(":resources:sounds/hit1.wav")
+        self.crash_sound = arcade.load_sound(":resources:sounds/error3.wav")
+
         # Separate variable that holds the player sprite
         self.player_sprite = None
         self.walls_sprite = None
+
         # Our physics engine
         self.physics_engine = None
 
@@ -88,6 +94,7 @@ class MyGame(arcade.Window):
 
     def setup(self):
         """ Set up the game and initialize the variables. """
+
         self.scene = arcade.Scene()
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -95,13 +102,9 @@ class MyGame(arcade.Window):
         self.score = 0
 
         self.walls_list = arcade.SpriteList()
+        self.start_block = arcade.SpriteList()
         self.generate_walls()
 
-        # self.flying_plane = [arcade.Sprite("planeGreen1.png", CHARACTER_SCALING),
-        #                      arcade.Sprite("planeGreen2.png", CHARACTER_SCALING),
-        #     arcade.Sprite("planeGreen3.png", CHARACTER_SCALING)]
-        # # for i in range(self.flying_plane):
-        # #     image_source = i
         self.fly_plane = []
         self.fly_plane.append(arcade.Sprite("planeGreen1.png", CHARACTER_SCALING))
         self.fly_plane.append(arcade.Sprite("planeGreen2.png", CHARACTER_SCALING))
@@ -113,16 +116,18 @@ class MyGame(arcade.Window):
 
         self.player_sprite = self.fly_plane[self.image]
 
-
         self.player_sprite.center_x = 128
         self.player_sprite.center_y = 128
         self.scene.add_sprite("Player", self.player_sprite)
         self.player_list.append(self.player_sprite)
 
+        start_block = Wall(":resources:images/tiles/brickGrey.png", SPRITE_SCALING_WALLS, self)
+        start_block.center_x = 128
+        start_block.center_y = 96
+        self.walls_list.append(start_block)
+
         self.physics_engine = arcade.PhysicsEnginePlatformer(
-
             self.player_sprite, self.walls_list, gravity_constant=GRAVITY)
-
     def update_walls_speed(self):
         if self.space_pressed:
             self.wall_change_x -= MOVEMENT_SPEED
@@ -142,12 +147,13 @@ class MyGame(arcade.Window):
         self.clear()
 
         arcade.start_render()
-
-        self.walls_list.draw()
         self.player_list.draw()
+        self.start_block.draw()
+        if self.game_started:
+            self.walls_list.draw()
 
-        output = f"Score: {self.score}"
-        arcade.draw_text(output, 350, 20, arcade.color.BLACK, font_size)
+            output = f"Score: {self.score}"
+            arcade.draw_text(output, 300, 20, arcade.color.BLACK, font_size)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -155,25 +161,30 @@ class MyGame(arcade.Window):
             self.player_sprite.change_y = PLAYER_JUMP_SPEED
             self.game_started = True
             self.space_pressed = True
+            arcade.play_sound(self.flying_sound)
 
     def on_update(self, delta_time):
         """ Movement and game logic """
-        self.image += 1
-        # if self.image >= len(self.fly_plane):
-        #     self.image = 0
-        # self.player_sprite = self.fly_plane[self.image]
-
-        self.update_walls_speed()
-        self.walls_list.update()
-        self.wall_change_x = 0
+        if self.game_started:
+            self.update_walls_speed()
+            self.walls_list.update()
+            self.wall_change_x = 0
+            self.image += 1
+            if self.image >= len(self.fly_plane):
+                self.image = 0
+                self.player_sprite = self.fly_plane[self.image]
 
         if not arcade.check_for_collision_with_list(self.player_sprite, self.walls_list):
             self.game_over = False
             self.score += 1
 
         if arcade.check_for_collision_with_list(self.player_sprite, self.walls_list):
+            self.game_started = False
+            score = self.score
+            print(score)
             print("game over")
-
+            arcade.play_sound(self.crash_sound)
+            arcade.draw_text(score, 300, 320, arcade.color.BLACK, font_size + 10)
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.physics_engine.update()
